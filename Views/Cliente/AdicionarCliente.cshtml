@@ -1,0 +1,139 @@
+﻿@model ClienteModel
+
+@{
+    ViewData["Title"] = "Cadastro de Clientes";
+}
+
+<div class="text-center">
+    <h6 class="display-6" style="font-size: 1.6rem !important;">
+        Cadastrar Cliente
+    </h6>
+</div>
+<br />
+<form asp-controller="Cliente" asp-action="AdicionarCliente" method="post" style="display: flex; flex-direction: column; gap:30px;">
+    <div class="formStyle">
+        <h6 class="text-center display-6" style="font-size: 1.6rem !important;">
+            Área Principal
+        </h6>
+        <div class="areaPrincipal">
+            <div class="divInput">
+                <label for="nomeCliente">Nome do Cliente/Razão Social</label>
+                <input type="text" asp-for="NomeCliente" oninput="atualizarLengthHelp(NomeCliente.value, 'nomeClienteHelp')" class="form-control" maxlength="150" required placeholder="Nome completo ou Razão Social do Cliente" autocomplete="off">
+                <small id="nomeClienteHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/150</small>
+            </div>
+            <div class="divInput">
+                <label for="Email">E-mail do Cliente</label>
+                <input type="email" formnovalidate asp-for="Email" oninput="atualizarLengthHelp(Email.value, 'emailHelp')" class="form-control" maxlength="150" required placeholder="E-mail do Cliente" autocomplete="off">
+                <small id="emailHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/150</small>
+            </div>
+        </div>
+        <div class="areaPrincipal">
+            <div class="divInput">
+                <label for="telefone">Telefone do Cliente</label>
+                <input type="text" asp-for="Telefone" oninput="Telefone.value = atualizarLengthHelpTelefone(Telefone.value, 'telefoneClienteHelp')" class="form-control" required placeholder="Telefone do Cliente" autocomplete="off">
+                <small id="telefoneClienteHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/11</small>
+            </div>
+            <div class="divInput">
+                <label for="dataCadastro">Data de Cadastro</label>
+                <input type="date" formnovalidate asp-for="DataCadastro" class="form-control" readonly placeholder="Data de Cadastro" autocomplete="off">
+            </div>
+        </div>
+    </div>
+    <div class="formStyle">
+        <h6 class="text-center display-6" style="font-size: 1.6rem !important;">
+            Informações Pessoais
+        </h6>
+        <div class="areaPrincipal">
+            <div class="divInput">
+                <label for="TipoPessoa">Tipo de Pessoa</label>
+                <input type="text" asp-for="TipoPessoa" oninput="atualizarLengthHelp(NomeCliente.value, 'TipoPessoaHelp')" class="form-control" maxlength="150" required placeholder=" Selecione o tipo de Pessoa" autocomplete="off">
+                <small id="TipoPessoaHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/150</small>
+            </div>
+            <div class="divInput">
+                <label for="Email">E-mail do Cliente</label>
+                <input type="email" formnovalidate asp-for="Email" oninput="atualizarLengthHelp(Email.value, 'emailHelp')" class="form-control" maxlength="150" required placeholder="E-mail do Cliente" autocomplete="off">
+                <small id="emailHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/150</small>
+            </div>
+        </div>
+        <div class="areaPrincipal">
+            <div class="divInput">
+                <label for="telefone">Telefone do Cliente</label>
+                <input type="text" asp-for="Telefone" oninput="Telefone.value = atualizarLengthHelpTelefone(Telefone.value, 'telefoneClienteHelp')" class="form-control" required placeholder="Telefone do Cliente" autocomplete="off">
+                <small id="telefoneClienteHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/11</small>
+            </div>
+            <div class="divInput">
+                <label for="dataCadastro">Data de Cadastro</label>
+                <input type="date" formnovalidate asp-for="DataCadastro" class="form-control" readonly placeholder="Data de Cadastro" autocomplete="off">
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<script>
+    function atualizarLengthHelp(value, id) {
+        document.getElementById(id).innerText = value.length + "/150"
+    }
+
+    function atualizarLengthHelpTelefone(value, id) {
+        let soma = 0;
+        let pos = 0;
+        let pattern = "(##) #####-####"
+
+        while (pos < value.length) {
+            if (!Number.isNaN(Number(value[pos]))) {
+                soma++;
+            }
+            pos++;
+        }
+        var valor = value.replace(/\D/g, '');
+        var telefoneMascarado = "";
+        if (soma > 0) {
+            telefoneMascarado = '(' + valor.substring(0, valor.length >= 2 ? 2 : valor.length);
+        }
+        if (soma > 2) {
+            telefoneMascarado += ") " + valor.substring(2, soma < 6 ? valor.length : 7);
+        }
+        if (soma > 8) {
+            telefoneMascarado += "-" + valor.substring(7, valor.length < 11 ? valor.length : 11);
+        }
+
+        document.getElementById(id).innerText = telefoneMascarado.replaceAll("(", "").replaceAll(")", "").replaceAll(" ", "").replaceAll("-", "").length + "/11"
+        return telefoneMascarado.substring(0, telefoneMascarado.length < pattern.length ? telefoneMascarado.length : pattern.length);
+    }
+
+    function validation() {
+        var forms = document.querySelectorAll('.validar')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            });
+    }
+</script>
+
+<style>
+    .areaPrincipal {
+        display: flex;
+        flex-direction: row;
+        gap: 30px
+    }
+
+    .divInput {
+        width: 100%
+    }
+
+    .formStyle {
+        box-shadow: 2px 3px 10px;
+        padding: 6px;
+        border-radius: 10px;
+    }
+</style>
