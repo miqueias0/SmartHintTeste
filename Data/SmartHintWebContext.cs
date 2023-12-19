@@ -8,6 +8,5 @@ namespace SmartHintTeste.Data
         public SmartHintWebContext(DbContextOptions<SmartHintWebContext> options) : base(options) { }
 
         public DbSet<ClienteModel> Cliente { get; set; }
-        public DbSet<UsuarioModel> Usuarios { get; set; }
     }
 }

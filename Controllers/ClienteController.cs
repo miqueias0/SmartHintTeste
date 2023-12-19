@@ -23,6 +23,7 @@ namespace SmartHintTeste.Controllers
             ClienteModel cliente = new ClienteModel();
             cliente.Id = Guid.NewGuid().ToString();
             cliente.DataCadastro = DateTime.Now;
+            cliente.DataNascimento = DateTime.Now;
             return View(cliente);
         }
 
