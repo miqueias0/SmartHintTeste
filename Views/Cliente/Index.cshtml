@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ClienteTableModel
+
+@{
     ViewData["Title"] = "Listagem de Clientes";
 }
 
@@ -26,7 +28,7 @@
                     <tr>
                         <th scope="col">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckIndeterminate">
+                                <input class="form-check-input" type="checkbox" id="flexCheckIndeterminate">
                                 <label class="form-check-label" for="flexCheckIndeterminate">
                                 </label>
                             </div>
@@ -40,40 +42,63 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckIndeterminate">
-                                <label class="form-check-label" for="flexCheckIndeterminate">
-                                </label>
-                            </div>
-                        </th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>mdo</td>
-                        <td>mdo</td>
-                        <td>mdo</td>
-                        <td>
-                            <div class="btn-group" role="group" aria-label="Basic outlined example">
-                                <button type="button" class="btn btn-outline-primary">Editar</button>
-                            </div>
-                        </td>
-                    </tr>
+                    @if (Model != null && Model.ClienteTableModelValue.Any())
+                    {
+                        foreach (ClienteTableModelValue cliente in Model.ClienteTableModelValue)
+                        {
+                            <tr>
+                                <th>
+                                    <div class="form-check">
+                                        @using (Html.BeginForm("Index", "Cliente", FormMethod.Get))
+                                        {
+                                            @Html.LabelFor(model => model.ClienteTableModelValue.Find(x => x.Equals(cliente)).Selected, "", new {@class="form-check-label"})
+                                            ;
+                                            @Html.CheckBoxFor(model => model.ClienteTableModelValue.Find(x => x.Equals(cliente)).Selected, new {@class="form-check-input chkCliente"})
+                                            ;
+                                        }
+                                    </div>
+                                </th>
+                                <td>@cliente.NomeCliente</td>
+                                <td>@cliente.Email</td>
+                                <td>@cliente.Telefone</td>
+                                <td>@cliente.DataCadastro</td>
+                                <td>@cliente.ClienteBloqueado</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                        <button type="button" class="btn btn-outline-primary">Editar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
         <nav aria-label="Page navigation" style="justify-content: center; display: flex; background: #fff; box-shadow: 2px 3px 10px;">
             <ul class="pagination" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
+                    <a class="page-link" href="@Url.Action("index", new { pagina = (Model.PaginaAtual > 1 ? Model.PaginaAtual - 1: Model.PaginaAtual), itensPorPagina = Model.ItensPorPagina })" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                @if (Model != null && Model.ClienteTableModelValue.Any())
+                {
+                    @for (int i = 1; i <= Math.Ceiling((double)Model.TotalClientes / Model.ItensPorPagina); i++)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("index", new { pagina = i, itensPorPagina = Model.ItensPorPagina })" class="@(i == Model.PaginaAtual ? "active" : "")">
+                                @i
+                            </a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                }
                 <!-- Adicione mais páginas conforme necessário -->
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
+                    <a class="page-link" href="@Url.Action("index", new { pagina = Model.PaginaAtual + (Model.TotalClientes > Model.ItensPorPagina * Model.PaginaAtual? 1: 0), itensPorPagina = Model.ItensPorPagina })" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -81,3 +106,19 @@
         </nav>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#flexCheckIndeterminate").change(function () {
+                $(".chkCliente").prop('checked', $(this).prop("checked"));
+            });
+
+            $(".chkCliente").change(function () {
+                if (!$(this).prop("checked")) {
+                    $("#flexCheckIndeterminate").prop('checked', false);
+                }
+            });
+        });
+    </script>
+}
