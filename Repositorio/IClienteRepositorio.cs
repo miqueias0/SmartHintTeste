@@ -8,6 +8,6 @@ namespace SmartHintTeste.Repositorio
 
         List<ClienteTableModelValue> BuscarTodos();
 
-        ClienteModel VerificarExistenciaDeCadastro(ClienteModel cliente);
+        List<ClienteModel> VerificarExistenciaDeCadastro(ClienteModel cliente);
     }
 }

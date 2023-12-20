@@ -60,25 +60,49 @@ namespace SmartHintTeste.Repositorio
             return clienteModels;
         }
 
-        public ClienteModel VerificarExistenciaDeCadastro(ClienteModel cliente)
+        public List<ClienteModel> VerificarExistenciaDeCadastro(ClienteModel cliente)
         {
-            ClienteModel clienteObtido = null;
+            List<ClienteModel> clientesObtidos = null;
             using (var connection = _smartHintWebContext.Database.GetDbConnection())
             {
                 connection.Open();
 
                 using (var comando = connection.CreateCommand())
                 {
-                    comando.CommandText = $"SELECT * FROM cliente cl WHERE cl.Email = {cliente.Email} OR cl.CpfCnpj = {cliente.CpfCnpj} " + (cliente.Isento != null && cliente.Isento != false ? $"OR {cliente.InscricaoEstadual}": "");
+                    comando.CommandText = "SELECT * FROM cliente cl ";
+                    String delimitador = " WHERE ";
+                    if(cliente.Email != null)
+                    {
+                        comando.CommandText += delimitador + $" cl.Email = '{cliente.Email}' ";
+                        delimitador = " OR ";
+                    }
+                    if(cliente.CpfCnpj != null)
+                    {
+                        var cpfCnpj = String.Join("", cliente.CpfCnpj.ToCharArray().Where(Char.IsDigit));
+                        comando.CommandText += delimitador + $" cl.CpfCnpj = '{cpfCnpj}' ";
+                        delimitador = " OR ";
+                    }
+                    if (cliente.Isento != null && !cliente.Isento && cliente.InscricaoEstadual != null)
+                    {
+                        var InscricaoEstadual = String.Join("", cliente.InscricaoEstadual.ToCharArray().Where(Char.IsDigit));
+                        comando.CommandText += delimitador + $" cl.InscricaoEstadual = '{InscricaoEstadual}' ";
+                        delimitador = " OR ";
+                    }
+
 
                     using (var reader = comando.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            clienteObtido = new ClienteModel();
+                            if(clientesObtidos == null)
+                            {
+                                clientesObtidos = new List<ClienteModel> ();
+                            }
+                            ClienteModel clienteObtido = new ClienteModel();
                             clienteObtido.Email = reader.IsDBNull(1) ? null : reader.GetString(1);
                             clienteObtido.InscricaoEstadual = reader.IsDBNull(6) ? null : reader.GetString(6);
                             clienteObtido.CpfCnpj = reader.IsDBNull(5) ? null : reader.GetString(5);
+                            clientesObtidos.Add (clienteObtido);
 
                         }
                     }
@@ -87,7 +111,7 @@ namespace SmartHintTeste.Repositorio
             }
 
 
-            return clienteObtido;
+            return clientesObtidos;
         }
     }
 }

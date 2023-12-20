@@ -12,6 +12,9 @@
 <br />
 <form asp-controller="Cliente" asp-action="AdicionarCliente" method="post" class="validar">
     <div style="display: flex; flex-direction: column; gap:30px;">
+            <div id="toast" class="hidden">
+                <div id="toast-body"></div>
+            </div>
         <div class="formStyle">
             <h6 class="text-center display-6" style="font-size: 1.6rem !important;">
                 Área Principal
@@ -309,7 +312,6 @@
                 document.getElementById(id).style.color = "#6c757d";
             }
         }
-        console.log(document.getElementById("SenhaId").value);
         return valor;
     }
 
@@ -325,21 +327,92 @@
     function validation() {
         var forms = document.querySelectorAll('.validar')
 
+        document.getElementById("Teste").addEventListener("click", function (event) {
+            console.log(document.getElementsByClassName("validar"));
+            
+        });
+
         Array.prototype.slice.call(forms)
             .forEach(function (form) {
                 form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity() || document.getElementById("SenhaConfirmarId").value !== document.getElementById("Senha").value) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    } else {
-                        form.classList.add('was-validated')
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    $.ajax({
+                        url: '@Url.Action("VerificarExistenciaDeCadastro", "Cliente")',
+                        type: 'POST',
+                        data: {
+                            cliente: {
+                                Email: document.getElementsByClassName("validar")[0] ?
+                                    document.getElementsByClassName("validar")[0][1] ?
+                                        document.getElementsByClassName("validar")[0][1].value : "" : "",
+                                CpfCnpj: document.getElementsByClassName("validar")[0] ?
+                                    document.getElementsByClassName("validar")[0][6] ?
+                                        document.getElementsByClassName("validar")[0][6].value : "" : "",
+                                InscricaoEstadual: document.getElementsByClassName("validar")[0] ?
+                                    document.getElementsByClassName("validar")[0][7] ?
+                                        document.getElementsByClassName("validar")[0][7].value : "" : "",
+                                Isento: document.getElementsByClassName("validar")[0] ?
+                                    document.getElementsByClassName("validar")[0][8] ?
+                                        document.getElementsByClassName("validar")[0][8].value : "" : "",
+                            }
+                        },
+                        success: function (result) {
+                            if (!result.sucesso) {
+                                showToast(result.mensagem, 3000);
+                            } else if (form.checkValidity() || document.getElementById("SenhaConfirmarId").value === document.getElementById("Senha").value) {
+                                form.classList.add('was-validated');
+                                form.submit();
+                            }
+                        },
+                        error: function () {
+                            toastr.error('Erro ao realizar a requisição', 'Erro');
+                        }
+                    });
                 }, false)
             });
     }
+    function showToast(message, duration = 3000) {
+        const toast = document.getElementById('toast');
+        const toastBody = document.getElementById('toast-body');
+
+        toastBody.innerHTML = message;
+
+        toast.classList.add('show');
+        toast.classList.remove('hidden');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            toast.classList.add('hidden');
+        }, duration);
+    }
+
 </script>
 
 <style>
+
+    #toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    #toast.show {
+        opacity: 1;
+    }
+
+    .hidden {
+        display: none;
+    }
+
     .areaPrincipal {
         display: flex;
         flex-direction: row;
@@ -377,53 +450,3 @@
         transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 </style>
-
-@section scripts {
-    <script>
-        $(document).ready(function () {
-            // ... (código anterior) ...
-
-            // Adiciona um evento para enviar os IDs selecionados para o servidor
-            $("#btnEnviar").click(function () {
-                var idsSelecionados = $(".chkComprador:checked").map(function () {
-                    return $(this).data("id");
-                }).get();
-
-                $.ajax({
-                    url: '@Url.Action("SelecionarCompradores", "Comprador")',
-                    type: 'POST',
-                    traditional: true,
-                    data: { ids: idsSelecionados },
-                    success: function (result) {
-                        if (result.sucesso) {
-                            // Exibe um toast de sucesso
-                            Toastify({
-                                text: result.mensagem,
-                                duration: 3000,  // Duração em milissegundos
-                                gravity: "top", // Posição do toast (top, bottom, left, right)
-                                backgroundColor: "green"
-                            }).showToast();
-                        } else {
-                            // Exibe um toast de erro
-                            Toastify({
-                                text: result.mensagem,
-                                duration: 5000,  // Duração em milissegundos
-                                gravity: "top", // Posição do toast (top, bottom, left, right)
-                                backgroundColor: "red"
-                            }).showToast();
-                        }
-                    },
-                    error: function () {
-                        // Exibe um toast de erro em caso de falha na requisição
-                        Toastify({
-                            text: "Erro ao processar a requisição.",
-                            duration: 5000,
-                            gravity: "top",
-                            backgroundColor: "red"
-                        }).showToast();
-                    }
-                });
-            });
-        });
-    </script>
-}

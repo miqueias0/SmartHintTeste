@@ -51,6 +51,17 @@ namespace SmartHintTeste.Controllers
                 cliente.InscricaoEstadual = String.Join("", cliente.InscricaoEstadual.ToCharArray().Where(Char.IsDigit));
             }
 
+            if(cliente.TipoPessoa == "J")
+            {
+                cliente.Genero = null;
+                cliente.DataNascimento = null;
+            }
+
+            if (cliente.Isento)
+            {
+                cliente.InscricaoEstadual = null;
+            }
+
             _clienteRepositorio.AdicionarCliente(cliente);
 
             return RedirectToAction("Index");
@@ -63,32 +74,50 @@ namespace SmartHintTeste.Controllers
         }
 
         [HttpPost]
-        public IActionResult VerificarExistenciaDeCadastro(ClienteModel cliente)
+        public ActionResult VerificarExistenciaDeCadastro(ClienteModel cliente)
         {
 
-            ClienteModel clienteModel = _clienteRepositorio.VerificarExistenciaDeCadastro(cliente);
+            List<ClienteModel> clienteModel = _clienteRepositorio.VerificarExistenciaDeCadastro(cliente);
             
-            if (clienteModel == null)
+            if(clienteModel != null) { 
+            if (clienteModel.FirstOrDefault(x =>
             {
-                return Json(new {sucesso = true});
+                return x.Email != null && cliente.Email != null
+                       && x.Email.ToLower().Equals(cliente.Email.ToLower());
+            }) != null)
+            {
+                return Json(new { sucesso = false, mensagem = "Este e-mail já está cadastrado para outro Cliente" });
             }
 
-            if (clienteModel.Email.Equals(cliente.Email))
+            if (clienteModel.FirstOrDefault(x =>
             {
-                return Json(new { sucesso = true, mensagem = "Este e-mail já está cadastrado para outro Cliente" });
+                var CpfCnpj = String.Empty;
+                if (cliente.CpfCnpj != null)
+                {
+                    CpfCnpj = String.Join("", cliente.CpfCnpj.ToCharArray().Where(Char.IsDigit));
+                }
+                return x.CpfCnpj != null && cliente.CpfCnpj != null
+                       && x.CpfCnpj.ToLower().Equals(CpfCnpj.ToLower());
+            }) != null)
+            {
+                return Json(new { sucesso = false, mensagem = "Este CPF/CNPJ já está cadastrado para outro Cliente" });
             }
 
-            if (clienteModel.CpfCnpj.Equals(cliente.CpfCnpj))
+            if (clienteModel.FirstOrDefault(x =>
             {
-                return Json(new { sucesso = true, mensagem = "Este CPF/CNPJ já está cadastrado para outro Cliente" });
-            }
-
-            if (clienteModel.InscricaoEstadual != null && clienteModel.InscricaoEstadual.Equals(cliente.InscricaoEstadual))
+                var InscricaoEstadual = String.Empty;
+                if(cliente.InscricaoEstadual != null)
+                {
+                    InscricaoEstadual = String.Join("", cliente.InscricaoEstadual.ToCharArray().Where(Char.IsDigit));
+                }
+                return x.Email != null && cliente.InscricaoEstadual != null
+                       && x.InscricaoEstadual.ToLower().Equals(InscricaoEstadual.ToLower());
+            }) != null)
             {
-                return Json(new { sucesso = true, mensagem = "Esta Inscrição Estadual já está cadastrada para outro Cliente" });
+                return Json(new { sucesso = false, mensagem = "Esta Inscrição Estadual já está cadastrada para outro Cliente" });
             }
-
-            return Json(new { sucesso = true });
+            }
+            return Json(new { sucesso = true, mensagem = "Tudo Certo" }); ;
         }
     }
 }

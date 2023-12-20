@@ -78,7 +78,7 @@
             <ul class="pagination" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
                 <li class="page-item">
                     <a class="page-link" href="@Url.Action("index", new { pagina = (Model.PaginaAtual > 1 ? Model.PaginaAtual - 1: Model.PaginaAtual), itensPorPagina = Model.ItensPorPagina })" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
+                        <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
                 @if (Model != null && Model.ClienteTableModelValue.Any())
