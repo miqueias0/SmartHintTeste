@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<SmartHintTeste.Data.SmartHintWebContext>(options =>
-    options.UseMySql("server=localhost;initial catalog=smart-hint;uid=;pwd=",
+    options.UseMySql("server=localhost;initial catalog=smart_hint;uid=root;pwd=minirrip0",
         ServerVersion.Parse("8.0.34-mysql")));
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 
