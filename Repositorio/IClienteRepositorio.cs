@@ -9,5 +9,9 @@ namespace SmartHintTeste.Repositorio
         List<ClienteTableModelValue> BuscarTodos();
 
         List<ClienteModel> VerificarExistenciaDeCadastro(ClienteModel cliente);
+
+        ClienteModel ObterPorId(String Id);
+
+        ClienteModel AlterarCliente(ClienteModel cliente);
     }
 }

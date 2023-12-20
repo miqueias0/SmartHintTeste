@@ -12,9 +12,9 @@
 <br />
 <form asp-controller="Cliente" asp-action="AdicionarCliente" method="post" class="validar">
     <div style="display: flex; flex-direction: column; gap:30px;">
-            <div id="toast" class="hidden">
-                <div id="toast-body"></div>
-            </div>
+        <div id="toast" class="hidden">
+            <div id="toast-body"></div>
+        </div>
         <div class="formStyle">
             <h6 class="text-center display-6" style="font-size: 1.6rem !important;">
                 Área Principal
@@ -24,19 +24,19 @@
                 <div class="divInput">
                     <label for="nomeCliente">Nome do Cliente/Razão Social</label>
                     <input type="text" asp-for="NomeCliente" oninput="atualizarLengthHelp(NomeCliente.value, 'nomeClienteHelp')" class="form-control " maxlength="150" placeholder="Nome completo ou Razão Social do Cliente" autocomplete="off" formnovalidate required>
-                    <small id="nomeClienteHelp" class=" form-text text-muted" style="display: flex; justify-content: end;">0/150</small>
+                    <small id="nomeClienteHelp" class=" form-text text-muted" style="display: flex; justify-content: end;">@Html.ValueFor(model => model.NomeCliente).Length/150</small>
                 </div>
                 <div class="divInput">
                     <label for="Email">E-Mail</label>
-                    <input type="email" formnovalidate asp-for="Email" oninput="atualizarLengthHelp(Email.value, 'emailHelp')" class="form-control  " maxlength="150" placeholder="E-mail do Cliente" autocomplete="off" required>
-                    <small id="emailHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/150</small>
+                    <input type="email" asp-for="Email" oninput="atualizarLengthHelp(Email.value, 'emailHelp')" class="form-control  " maxlength="150" placeholder="E-mail do Cliente" autocomplete="off" formnovalidate required>
+                    <small id="emailHelp" class="form-text text-muted" style="display: flex; justify-content: end;">@Html.ValueFor(model => model.Email).Length/150</small>
                 </div>
             </div>
             <div class="areaPrincipal">
                 <div class="divInput">
                     <label for="telefone">Telefone</label>
                     <input type="text" asp-for="Telefone" oninput="Telefone.value = atualizarLengthHelpTelefone(Telefone.value, 'telefoneClienteHelp')" class="form-control " placeholder="Telefone do Cliente" autocomplete="off" formnovalidate required>
-                    <small id="telefoneClienteHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/11</small>
+                    <small id="telefoneClienteHelp" class="form-text text-muted" style="display: flex; justify-content: end;">@Html.ValueFor(model => model.Telefone).Length/11</small>
                 </div>
                 <div class="divInput">
                     <label for="DataCadastro">Data de Cadastro</label>
@@ -62,18 +62,18 @@
                 <div class="divInput">
                     <label for="CpfCnpj">CPF/CNPJ</label>
                     <input type="text" formnovalidate asp-for="CpfCnpj" oninput="CpfCnpj.value = atualizarLengthHelpCpfCnpj(CpfCnpj.value, 'CpfCnpjHelp')" class="form-control " maxlength="18" placeholder="Insira o CPF ou o CNPJ do Cliente" autocomplete="off" required>
-                    <small id="CpfCnpjHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/11</small>
+                    <small id="CpfCnpjHelp" class="form-text text-muted" style="display: flex; justify-content: end;">@Html.ValueFor(model => model.CpfCnpj).Length/11</small>
                 </div>
             </div>
             <div class="areaPrincipal">
                 <div class="divInput">
                     <label for="InscricaoEstadual">Inscrição Estadual</label>
                     <input type="text" asp-for="InscricaoEstadual" id="InscricaoEstadualId" oninput="InscricaoEstadual.value = atualizarLengthHelpInscricaoEstadual(InscricaoEstadual.value, 'InscricaoEstadualHelp')" class="form-control " [required]="tipoPessoaDropdown.value === 'J'" placeholder="Inscrição Estadual do Cliente, selecionar Isento caso assim for" autocomplete="off">
-                    <small id="InscricaoEstadualHelp" class="form-text text-muted" style="display: flex; justify-content: end;">0/12</small>
+                    <small id="InscricaoEstadualHelp" class="form-text text-muted" style="display: flex; justify-content: end;">@Html.ValueFor(model => model.InscricaoEstadual).Length/12</small>
                 </div>
                 <div class="divInput" style="display: flex; align-items: center;">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" asp-for="Isento"  onchange="InscricaoEstadual.value = limparInscricaoEstadual((Isento[0] ? Isento[0].checked: Isento.checked))" class="form-control" placeholder="Isento">
+                        <input class="form-check-input" type="checkbox" asp-for="Isento" onchange="InscricaoEstadual.value = limparInscricaoEstadual(Isento[0] ? Isento[0].checked: Isento.checked)" class="form-control" placeholder="Isento">
                         <label class="form-check-label" for="Isento">
                             Isento
                         </label>
@@ -122,7 +122,7 @@
                 <div class="divInput">
                     <label for="Senha">Senha de Acesso</label>
                     <input type="password" maxlength="15" asp-for="Senha" id="SenhaId" oninput="Senha.value = atualizarLengthHelpCadastrarSenha(Senha.value, 'SenhaHelp')" class="form-control " placeholder="Cadastre a senha de acesso do seu Cliente" autocomplete="off" required>
-                    <small id="SenhaHelp" style="display: flex; justify-content: end; color: #6c757d;">0/15</small>
+                    <small id="SenhaHelp" style="display: flex; justify-content: end; color: #6c757d;">@Html.ValueFor(model => model.Senha).Length/15</small>
                 </div>
             </div>
             <div class="areaPrincipal">
@@ -135,7 +135,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <div class="divInput" style="display: flex; flex-direction: column;">
-                <button type="submit" class="btn btn-primary">Adicionar Cliente</button>
+                <button type="submit" onclick="verificar(event)" class="btn btn-primary">Adicionar Cliente</button>
             </div>
             <div class="divInput" style="display: flex; flex-direction: column;">
                 <a class="btn btn-danger" asp-controller="Cliente" asp-action="Index">Voltar</a>
@@ -148,7 +148,7 @@
 <script>
 
     function verificar(event) {
-        console.log(event)
+        document.getElementsByClassName('validar')[0].classList.add('was-validated');
     }
 
     aparecer();
@@ -284,7 +284,7 @@
         if (document.getElementById("SenhaConfirmarId").value) {
             atualizarLengthHelpSenhaConfirmar(document.getElementById("SenhaConfirmarId").value, "SenhaConfirmarHelp");
         }
-        
+
         return valor;
     }
 
@@ -323,54 +323,7 @@
         }
         return "";
     }
-    validation();
-    function validation() {
-        var forms = document.querySelectorAll('.validar')
 
-        document.getElementById("Teste").addEventListener("click", function (event) {
-            console.log(document.getElementsByClassName("validar"));
-            
-        });
-
-        Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    $.ajax({
-                        url: '@Url.Action("VerificarExistenciaDeCadastro", "Cliente")',
-                        type: 'POST',
-                        data: {
-                            cliente: {
-                                Email: document.getElementsByClassName("validar")[0] ?
-                                    document.getElementsByClassName("validar")[0][1] ?
-                                        document.getElementsByClassName("validar")[0][1].value : "" : "",
-                                CpfCnpj: document.getElementsByClassName("validar")[0] ?
-                                    document.getElementsByClassName("validar")[0][6] ?
-                                        document.getElementsByClassName("validar")[0][6].value : "" : "",
-                                InscricaoEstadual: document.getElementsByClassName("validar")[0] ?
-                                    document.getElementsByClassName("validar")[0][7] ?
-                                        document.getElementsByClassName("validar")[0][7].value : "" : "",
-                                Isento: document.getElementsByClassName("validar")[0] ?
-                                    document.getElementsByClassName("validar")[0][8] ?
-                                        document.getElementsByClassName("validar")[0][8].value : "" : "",
-                            }
-                        },
-                        success: function (result) {
-                            if (!result.sucesso) {
-                                showToast(result.mensagem, 3000);
-                            } else if (form.checkValidity() || document.getElementById("SenhaConfirmarId").value === document.getElementById("Senha").value) {
-                                form.classList.add('was-validated');
-                                form.submit();
-                            }
-                        },
-                        error: function () {
-                            toastr.error('Erro ao realizar a requisição', 'Erro');
-                        }
-                    });
-                }, false)
-            });
-    }
     function showToast(message, duration = 3000) {
         const toast = document.getElementById('toast');
         const toastBody = document.getElementById('toast-body');
@@ -405,9 +358,9 @@
         transition: opacity 0.3s ease-in-out;
     }
 
-    #toast.show {
-        opacity: 1;
-    }
+        #toast.show {
+            opacity: 1;
+        }
 
     .hidden {
         display: none;
@@ -450,3 +403,58 @@
         transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 </style>
+
+@section scripts {
+    <script>
+        validation();
+        function validation() {
+            $('.validar').on('submit', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                var form = $(this);
+
+                var clienteData = {
+                    Email: form.find('[name="Email"]').val(),
+                    CpfCnpj: form.find('[name="CpfCnpj"]').val(),
+                    InscricaoEstadual: form.find('[name="InscricaoEstadual"]').val(),
+                    Isento: form.find('[name="Isento"]').val()
+                };
+
+                $.ajax({
+                    url: '@Url.Action("VerificarExistenciaDeCadastro", "Cliente")',
+                    type: 'POST',
+                    data: { cliente: clienteData },
+                    success: function (result) {
+                        if (!result.sucesso) {
+                            showToast(result.mensagem, 3000);
+                        } else if (form[0].checkValidity() || $('#SenhaConfirmarId').val() === $('#Senha').val()) {
+                            form.addClass('was-validated');
+                            form.submit();
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Erro ao realizar a requisição', 'Erro');
+                    }
+                });
+            });
+        }
+        $(document).ready(function () {
+            try {
+                $('#Telefone').val(atualizarLengthHelpTelefone($('#Telefone').val(), 'telefoneClienteHelp'));
+            } catch { }
+            try {
+                $('#CpfCnpj').val(atualizarLengthHelpCpfCnpj($('#CpfCnpj').val(), 'CpfCnpjHelp'));
+            } catch { }
+            try {
+                $('#InscricaoEstadual').val(atualizarLengthHelpInscricaoEstadual($('#InscricaoEstadual').val(), 'InscricaoEstadualHelp'));
+            } catch { }
+            try {
+                $('#InscricaoEstadual').val(limparInscricaoEstadual($('#Isento').val()));
+            } catch { }
+            try {
+                $('#Senha').val(limparInscricaoEstadual($('#Senha').val()));
+            } catch { }
+        });
+    </script>
+}
